@@ -320,13 +320,22 @@ static void each_object(NSArray *objects, void (^block)(id object))
     }];
 }
 
+- (CGSize)sizeThatFits:(CGSize)size {
+	CGSize labelSize = [self labelSize];
+	
+	return CGSizeMake(MIN(labelSize.width + 2.0f * self.labelSpacing, size.width), MIN(labelSize.height, size.height));
+}
+
+- (CGSize)labelSize {
+	return [self.mainLabel sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGRectGetHeight(self.bounds))];
+}
+
 - (void)refreshLabels
 {
 	__block float offset = 0;
 	
     // calculate the label size
-    CGSize labelSize = [self.mainLabel.text sizeWithFont:self.mainLabel.font
-                                       constrainedToSize:CGSizeMake(CGFLOAT_MAX, CGRectGetHeight(self.bounds))];
+    CGSize labelSize = [self labelSize];
 
     each_object(self.labels, ^(UILabel *label) {
         CGRect frame = label.frame;
